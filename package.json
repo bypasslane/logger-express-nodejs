@@ -1,0 +1,16 @@
+{
+  "name": "logger-express-nodejs",
+  "version": "1.0.0",
+  "description": "unified location that handles logging the same for all our expressjs applications",
+  "main": "index.js",
+  "repository": "git@github.com:bypasslane/logger-express-nodejs.git",
+  "author": "Jon Ross <jross@bypassmobile.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express-winston": "^2.4.0",
+    "morgan": "^1.8.2",
+    "underscore": "^1.8.3",
+    "winston": "^2.3.1",
+    "winston-raven-sentry": "^1.0.1"
+  }
+}
