@@ -1,3 +1,4 @@
+const extend = require('extend');
 function logging(config) {
   let requestLogger = function () {}
   let errorLogger = function () {}
@@ -99,7 +100,7 @@ function logging(config) {
       NODE_ENV: process.env.NODE_ENV,
       DISABLE_LOGS : process.env.DISABLE_LOGS === 'true'
     }
-    _.extend(config, envConfig)
+    extend(config, envConfig);
   }
 
   processConfig();
