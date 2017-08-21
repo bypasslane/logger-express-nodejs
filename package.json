@@ -1,6 +1,6 @@
 {
   "name": "logger-express-nodejs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "unified location that handles logging the same for all our expressjs applications",
   "license": "MIT",
   "author": "Jon Ross <jross@bypassmobile.com>",
