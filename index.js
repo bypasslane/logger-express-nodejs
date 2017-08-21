@@ -90,7 +90,7 @@ function logging(config) {
   function processConfig() {
     config = config || {};
     let envConfig = {
-      SENTRY_DSN: process.env.SENTRY_DSN || null,
+      SENTRY_DSN: process.env.SENTRY_DSN,
       NODE_ENV: process.env.NODE_ENV,
       DISABLE_LOGS: process.env.DISABLE_LOGS === "true"
     };
