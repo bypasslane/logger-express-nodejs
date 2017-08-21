@@ -4,7 +4,7 @@ Module for logging from express js based services
 
 
 ## Example Use
-```ecmascript 6
+```javascript
 
 //optional config (shown with defaults the module uses)
 const loggerConfig = {
