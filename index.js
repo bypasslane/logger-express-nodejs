@@ -1,12 +1,34 @@
 function logging(config) {
   let requestLogger = function() {};
-  let errorLogger = function() {};
+  let errorLogger = handleFallThroughErrors;
 
   function setDevelopmentLogging() {
     const morgan = require("morgan");
     requestLogger = function(app) {
       app.use(morgan("dev"));
+      handleFallThroughErrors(app);
     };
+  }
+
+  function handleFallThroughErrors(app) {
+    app.use(function(err, req, res, next) {
+      res.status(err.status || 500);
+      res.json({errors: mergeErrors(err)});
+    });
+
+    function mergeErrors(err) {
+      let errors = [];
+
+      if (err.detail || err.message) {
+        errors.push({
+          detail: err.detail || err.message
+        });
+      }
+      if (err.body && err.body.errors) {
+        errors = errors.concat(err.body.errors);
+      }
+      return errors;
+    }
   }
 
   function setProductionLogging() {
@@ -63,25 +85,7 @@ function logging(config) {
           ]
         })
       );
-
-      app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.json({errors: mergeErrors(err)});
-      });
-
-      function mergeErrors(err) {
-        let errors = [];
-
-        if (err.detail || err.message) {
-          errors.push({
-            detail: err.detail || err.message
-          });
-        }
-        if (err.body && err.body.errors) {
-          errors = errors.concat(err.body.errors);
-        }
-        return errors;
-      }
+      handleFallThroughErrors(app);
     };
   }
 
