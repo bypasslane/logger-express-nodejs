@@ -1,5 +1,3 @@
-const _ = require("underscore");
-
 function logging(config) {
   let requestLogger = function() {};
   let errorLogger = function() {};
@@ -89,13 +87,11 @@ function logging(config) {
 
   function processConfig() {
     config = config || {};
-    let envConfig = {
-      SENTRY_DSN: process.env.SENTRY_DSN,
-      NODE_ENV: process.env.NODE_ENV,
-      DISABLE_LOGS: process.env.DISABLE_LOGS === "true"
+    config = {
+      SENTRY_DSN: config.SENTRY_DSN || process.env.SENTRY_DSN,
+      NODE_ENV: config.NODE_ENV || process.env.NODE_ENV,
+      DISABLE_LOGS: config.DISABLE_LOGS || process.env.DISABLE_LOGS === "true"
     };
-
-    _.defaults(config, envConfig);
   }
 
   function init() {
