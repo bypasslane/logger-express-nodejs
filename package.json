@@ -7,10 +7,10 @@
   "main": "index.js",
   "repository": "git@github.com:bypasslane/logger-express-nodejs.git",
   "scripts": {
-    "precommit": "npx prettier --write --no-bracket-spacing \"{index.js,test/*.js}\"",
-    "report-coverage": "npx nyc report --reporter=lcov > coverage.lcov && npx codecov --token=c9ff8517-e6b5-4b48-a260-74ffbe3c55c1",
-    "style-check": "npx prettier --no-bracket-spacing --list-different \"{index.js,test/*.js}\"",
-    "test": "NODE_ENV=test npx nyc npx mocha",
+    "precommit": "./node_modules/.bin/prettier --write --no-bracket-spacing \"{index.js,test/*.js}\"",
+    "report-coverage": "./node_modules/.bin/nyc report --reporter=lcov > coverage.lcov && ./node_modules/.bin/codecov --token=c9ff8517-e6b5-4b48-a260-74ffbe3c55c1",
+    "style-check": "./node_modules/.bin/prettier --no-bracket-spacing --list-different \"{index.js,test/*.js}\"",
+    "test": "NODE_ENV=test ./node_modules/.bin/nyc ./node_modules/.bin/mocha",
     "test-ci": "yarn style-check && yarn test"
   },
   "dependencies": {
