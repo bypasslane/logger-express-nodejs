@@ -1,7 +1,5 @@
 const chai = require("chai");
 const expect = chai.expect;
-const sinon = require("sinon");
-const sinonChai = require("sinon-chai");
 const stripColor = require("strip-color");
 const express = require("express");
 const logger = require("../index");
@@ -10,7 +8,6 @@ const fs = require("fs");
 
 let stdout = require("test-console").stdout;
 let stderr = require("test-console").stderr;
-chai.use(sinonChai);
 
 describe("logger-express-nodejs", function() {
   let stdoutInspect,
