@@ -2,15 +2,58 @@
   "name": "logger-express-nodejs",
   "version": "1.0.0",
   "description": "unified location that handles logging the same for all our expressjs applications",
+  "license": "MIT",
+  "author": "Jon Ross <jross@bypassmobile.com>",
   "main": "index.js",
   "repository": "git@github.com:bypasslane/logger-express-nodejs.git",
-  "author": "Jon Ross <jross@bypassmobile.com>",
-  "license": "MIT",
+  "scripts": {
+    "precommit": "npx prettier --write --no-bracket-spacing \"{index.js,test/*.js}\"",
+    "report-coverage": "npx nyc report --reporter=lcov > coverage.lcov && npx codecov --token=c9ff8517-e6b5-4b48-a260-74ffbe3c55c1",
+    "style-check": "npx prettier --no-bracket-spacing --list-different \"{index.js,test/*.js}\"",
+    "test": "NODE_ENV=test npx nyc npx mocha",
+    "test-ci": "yarn style-check && yarn test"
+  },
   "dependencies": {
     "express-winston": "^2.4.0",
     "extend": "^3.0.1",
     "morgan": "^1.8.2",
+    "underscore": "^1.8.3",
     "winston": "^2.3.1",
     "winston-raven-sentry": "^1.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.1",
+    "chai-as-promised": "^7.1.1",
+    "codecov": "^2.3.0",
+    "express": "^4.15.4",
+    "mocha": "^3.5.0",
+    "nyc": "^11.1.0",
+    "prettier": "^1.5.3",
+    "proxyquire": "^1.8.0",
+    "sinon": "^3.2.1",
+    "sinon-chai": "^2.13.0",
+    "strip-color": "^0.1.0",
+    "supertest": "^3.0.0",
+    "supertest-as-promised": "^4.0.2",
+    "test-console": "^1.0.0"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "lines": 100,
+    "statements": 100,
+    "functions": 100,
+    "branches": 100,
+    "include": [
+      "index.js"
+    ],
+    "exclude": [
+      "app/**/*.spec.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "cache": true,
+    "report-dir": "./coverage"
   }
 }
