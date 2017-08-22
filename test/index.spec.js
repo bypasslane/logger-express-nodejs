@@ -1,7 +1,5 @@
 const chai = require("chai");
 const expect = chai.expect;
-const sinon = require("sinon");
-const sinonChai = require("sinon-chai");
 const stripColor = require("strip-color");
 const express = require("express");
 const logger = require("../index");
@@ -10,7 +8,6 @@ const fs = require("fs");
 
 let stdout = require("test-console").stdout;
 let stderr = require("test-console").stderr;
-chai.use(sinonChai);
 
 describe("logger-express-nodejs", function() {
   let stdoutInspect,
@@ -104,6 +101,24 @@ describe("logger-express-nodejs", function() {
         expect(stdoutInspect.output.length).to.eq(0);
       });
   });
+  it("should correctly return error info response on error when logging is off", function() {
+    process.env.DISABLE_LOGS = "true";
+    applyLogger(logger());
+
+    return request(app)
+      .get("/nextError")
+      .then(function(res) {
+        stdoutInspect.restore();
+        stderrInspect.restore();
+        return res;
+      })
+      .then(function(response) {
+        expect(response.statusCode).to.eql(500);
+        expect(response.body.errors).to.eql([{details: "sad Chewie"}]);
+        expect(stdoutInspect.output.length).to.eq(0);
+      });
+  });
+
   describe("production logger", function() {
     beforeEach(function() {
       process.env.NODE_ENV = "SomeOtherEnvThatIsNotDevelopment";
