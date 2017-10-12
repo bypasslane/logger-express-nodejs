@@ -169,6 +169,25 @@ describe("logger-express-nodejs", function() {
           //this endpoint doesn't hit the error logger as it's responding directly with a 500
         });
     });
+    it("should output timezone-corrected timestamp with log", function() {
+      applyLogger(logger());
+
+      return request(app)
+        .get("/")
+        .then(function(res) {
+          stdoutInspect.restore();
+          return res;
+        })
+        .then(function(response) {
+          const time = moment()
+            .tz("America/Chicago")
+            .format("YYYY-MM-DD");
+          const timeMatch = new RegExp(time, "g");
+
+          // Matches current Year-Month-Day with the log timestamp
+          expect(stdoutInspect.output).to.match(timeMatch);
+        });
+    });
     it("should output logs for unhandled errors", function(done) {
       applyLogger(logger());
 
