@@ -5,6 +5,7 @@ const express = require("express");
 const logger = require("../index");
 const request = require("supertest-as-promised");
 const fs = require("fs");
+const moment = require("moment-timezone");
 
 let stdout = require("test-console").stdout;
 let stderr = require("test-console").stderr;
@@ -99,6 +100,25 @@ describe("logger-express-nodejs", function() {
       .then(function(response) {
         expect(response.statusCode).to.eql(200);
         expect(stdoutInspect.output.length).to.eq(0);
+      });
+  });
+  it("should output timezone-corrected timestamp with log", function() {
+    applyLogger(logger());
+
+    return request(app)
+      .get("/")
+      .then(function(res) {
+        stdoutInspect.restore();
+        return res;
+      })
+      .then(function(response) {
+        const time = moment()
+          .tz("America/Chicago")
+          .format("YYYY-MM-DD");
+        const timeMatch = new RegExp(time, "g");
+
+        // Matches current Year-Month-Day with the log timestamp
+        expect(stdoutInspect.output).to.match(timeMatch);
       });
   });
   it("should correctly return error info response on error when logging is off", function() {
