@@ -128,7 +128,7 @@ describe("logger-express-nodejs", function() {
       applyLogger(logger());
       stdoutInspect.restore();
       expect(stdoutInspect.output[0]).to.match(
-        /raven@2\.1\.1 alert: no DSN provided, error reporting disabled/
+        /alert: no DSN provided, error reporting disabled/
       );
     });
     it("should output logs for errors", function() {
