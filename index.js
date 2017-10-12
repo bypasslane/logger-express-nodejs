@@ -1,3 +1,5 @@
+const moment = require("moment-timezone");
+
 function logging(config) {
   let requestLogger = function() {};
   let errorLogger = handleFallThroughErrors;
@@ -50,7 +52,8 @@ function logging(config) {
           transports: [
             new winston.transports.Console({
               json: false,
-              colorize: true
+              colorize: true,
+              timestamp: timeZoneStamp
             })
           ],
           expressFormat: true,
@@ -69,7 +72,8 @@ function logging(config) {
               filename: "./errors.log",
               // File will only record errors
               level: "error",
-              json: true
+              json: true,
+              timestamp: timeZoneStamp
             })
           ]
         })
@@ -80,13 +84,21 @@ function logging(config) {
             new winston.transports.Console({
               level: "error",
               json: false,
-              colorize: true
+              colorize: true,
+              timestamp: timeZoneStamp
             })
           ]
         })
       );
       handleFallThroughErrors(app);
     };
+  }
+
+  function timeZoneStamp() {
+    var currentTime = moment()
+      .tz("America/Chicago")
+      .format();
+    return currentTime;
   }
 
   function processConfig() {
