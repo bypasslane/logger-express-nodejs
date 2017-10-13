@@ -5,6 +5,7 @@ const express = require("express");
 const logger = require("../index");
 const request = require("supertest-as-promised");
 const fs = require("fs");
+const moment = require("moment-timezone");
 
 let stdout = require("test-console").stdout;
 let stderr = require("test-console").stderr;
@@ -101,6 +102,25 @@ describe("logger-express-nodejs", function() {
         expect(stdoutInspect.output.length).to.eq(0);
       });
   });
+  it("should output timezone-corrected timestamp with log", function() {
+    applyLogger(logger());
+
+    return request(app)
+      .get("/")
+      .then(function(res) {
+        stdoutInspect.restore();
+        return res;
+      })
+      .then(function(response) {
+        const time = moment()
+          .tz("America/Chicago")
+          .format("YYYY-MM-DD");
+        const timeMatch = new RegExp(time, "g");
+
+        // Matches current Year-Month-Day with the log timestamp
+        expect(stdoutInspect.output).to.match(timeMatch);
+      });
+  });
   it("should correctly return error info response on error when logging is off", function() {
     process.env.DISABLE_LOGS = "true";
     applyLogger(logger());
@@ -128,7 +148,7 @@ describe("logger-express-nodejs", function() {
       applyLogger(logger());
       stdoutInspect.restore();
       expect(stdoutInspect.output[0]).to.match(
-        /raven@2\.1\.1 alert: no DSN provided, error reporting disabled/
+        /alert: no DSN provided, error reporting disabled/
       );
     });
     it("should output logs for errors", function() {
@@ -147,6 +167,25 @@ describe("logger-express-nodejs", function() {
             /error 500 \d\d*ms statusCode=500, url=\/error, .+ connection=close, method=GET, httpVersion=.{3,4}, originalUrl=\/error, , responseTime=\d+\n/
           );
           //this endpoint doesn't hit the error logger as it's responding directly with a 500
+        });
+    });
+    it("should output timezone-corrected timestamp with log", function() {
+      applyLogger(logger());
+
+      return request(app)
+        .get("/")
+        .then(function(res) {
+          stdoutInspect.restore();
+          return res;
+        })
+        .then(function(response) {
+          const time = moment()
+            .tz("America/Chicago")
+            .format("YYYY-MM-DD");
+          const timeMatch = new RegExp(time, "g");
+
+          // Matches current Year-Month-Day with the log timestamp
+          expect(stdoutInspect.output).to.match(timeMatch);
         });
     });
     it("should output logs for unhandled errors", function(done) {
