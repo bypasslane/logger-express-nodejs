@@ -40,7 +40,10 @@ function logging(config) {
     const sentryOptions = {
       dsn: config.SENTRY_DSN,
       environment: config.NODE_ENV,
-      level: "error"
+      level: "error",
+      tags: {
+        clusterName: config.CLUSTER_NAME
+      }
     };
     let logger = new winston.Logger();
     logger.add(Sentry, sentryOptions);
@@ -106,7 +109,8 @@ function logging(config) {
     config = {
       SENTRY_DSN: config.SENTRY_DSN || process.env.SENTRY_DSN,
       NODE_ENV: config.NODE_ENV || process.env.NODE_ENV,
-      DISABLE_LOGS: config.DISABLE_LOGS || process.env.DISABLE_LOGS === "true"
+      DISABLE_LOGS: config.DISABLE_LOGS || process.env.DISABLE_LOGS === "true",
+      CLUSTER_NAME: config.CLUSTER_NAME || process.env.CLUSTER_NAME
     };
   }
 
