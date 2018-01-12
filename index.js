@@ -1,4 +1,5 @@
 const moment = require("moment-timezone");
+const fs = require("fs");
 
 function logging(config) {
   let requestLogger = function() {};
@@ -57,6 +58,11 @@ function logging(config) {
               json: false,
               colorize: true,
               timestamp: timeZoneStamp
+            }),
+            new winston.transports.File({
+              filename: "./log/app.log",
+              json: true,
+              timestamp: timeZoneStamp
             })
           ],
           expressFormat: true,
@@ -77,13 +83,7 @@ function logging(config) {
               level: "error",
               json: true,
               timestamp: timeZoneStamp
-            })
-          ]
-        })
-      );
-      app.use(
-        expressWinston.errorLogger({
-          transports: [
+            }),
             new winston.transports.Console({
               level: "error",
               json: false,
@@ -112,6 +112,9 @@ function logging(config) {
       DISABLE_LOGS: config.DISABLE_LOGS || process.env.DISABLE_LOGS === "true",
       CLUSTER_NAME: config.CLUSTER_NAME || process.env.CLUSTER_NAME
     };
+    // create log folder
+    try { fs.mkdirSync('./log'); }
+    catch (e) { console.log('./log directory already exists, skipping creation'); }
   }
 
   function init() {
@@ -131,5 +134,6 @@ function logging(config) {
   this.errorLogger = errorLogger;
   return this;
 }
+
 
 module.exports = logging;
