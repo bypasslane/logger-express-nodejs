@@ -12,7 +12,7 @@ const loggerConfig = {
                            NODE_ENV: process.env.NODE_ENV,
                            DISABLE_LOGS: process.env.DISABLE_LOGS === "true"
                       };
-                      
+
 const logger = require("logger")(loggerConfig);
 
 app = express();

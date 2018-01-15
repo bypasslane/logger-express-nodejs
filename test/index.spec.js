@@ -67,6 +67,8 @@ describe("logger-express-nodejs", function() {
     stderrInspect.restore();
     //delete errors log
     if (fs.existsSync("./errors.log")) fs.truncateSync("./errors.log");
+    if (fs.existsSync("./log/app.log")) fs.unlinkSync("./log/app.log");
+    if (fs.existsSync("./log")) fs.rmdirSync("./log");
   });
 
   it("should output to the console using morgan when in development mode", function() {
@@ -137,6 +139,19 @@ describe("logger-express-nodejs", function() {
         expect(response.body.errors).to.eql([{details: "sad Chewie"}]);
         expect(stdoutInspect.output.length).to.eq(0);
       });
+  });
+  it("should respect CREATE_LOG_DIR option", function() {
+    applyLogger(logger());
+
+    expect(fs.existsSync("./log")).to.be.true;
+  });
+  it("should not throw error if file already exists", function() {
+    fs.mkdirSync("./log");
+    applyLogger(logger());
+    stdoutInspect.restore();
+    stderrInspect.restore();
+
+    expect(stderrInspect.output.length).to.eq(0);
   });
 
   describe("production logger", function() {
