@@ -57,6 +57,7 @@ function logging(config) {
             new winston.transports.Console({
               json: false,
               colorize: true,
+              level: "info",
               timestamp: timeZoneStamp
             }),
             new winston.transports.File({
@@ -67,6 +68,7 @@ function logging(config) {
           ],
           expressFormat: true,
           colorize: true,
+          ignoreRoute: filterLogs,
           ignoredRoutes: ["/status"]
         })
       );
@@ -102,6 +104,10 @@ function logging(config) {
       .tz("America/Chicago")
       .format();
     return currentTime;
+  }
+
+  function filterLogs(req, res) {
+    if (req.headers["user-agent"] === "ELB-HealthChecker/2.0") return true;
   }
 
   function processConfig() {
