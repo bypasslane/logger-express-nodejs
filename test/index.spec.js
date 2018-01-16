@@ -153,6 +153,20 @@ describe("logger-express-nodejs", function() {
 
     expect(stderrInspect.output.length).to.eq(0);
   });
+  it("should ignore ELB-HealthChecker requests", function() {
+    applyLogger(logger());
+
+    request(app)
+      .get("/")
+      .set('User-Agent', "ELB-HealthChecker/2.0")
+      .then(function(res) {
+        stdoutInspect.restore();
+        return res;
+      })
+      .then(function(res) {
+        expect(stdoutInspect.output.length).to.eq(0);
+      });
+  });
 
   describe("production logger", function() {
     beforeEach(function() {
