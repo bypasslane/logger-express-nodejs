@@ -2,21 +2,13 @@ const moment = require("moment-timezone");
 const fs = require("fs");
 
 function logging(config) {
-  let requestLogger = function() {};
+  let requestLogger = function () { };
   let errorLogger = handleFallThroughErrors;
 
-  function setDevelopmentLogging() {
-    const morgan = require("morgan");
-    requestLogger = function(app) {
-      app.use(morgan("dev"));
-      handleFallThroughErrors(app);
-    };
-  }
-
   function handleFallThroughErrors(app) {
-    app.use(function(err, req, res, next) {
+    app.use(function (err, req, res, next) {
       res.status(err.status || 500);
-      res.json({errors: mergeErrors(err)});
+      res.json({ errors: mergeErrors(err) });
     });
 
     function mergeErrors(err) {
@@ -34,7 +26,7 @@ function logging(config) {
     }
   }
 
-  function setProductionLogging() {
+  function setLogging() {
     const winston = require("winston");
     const expressWinston = require("express-winston");
     const Sentry = require("winston-raven-sentry");
@@ -46,17 +38,18 @@ function logging(config) {
         clusterName: config.CLUSTER_NAME
       }
     };
+
     let logger = new winston.Logger();
     logger.add(Sentry, sentryOptions);
 
-    requestLogger = function(app) {
+    requestLogger = function (app) {
       app.use(logger.transports.sentry.raven.requestHandler());
       app.use(
         expressWinston.logger({
           transports: [
             new winston.transports.Console({
               json: false,
-              colorize: true,
+              colorize: config.NODE_ENV === "development" || config.COLORIZE,
               level: "info",
               timestamp: timeZoneStamp
             }),
@@ -67,14 +60,14 @@ function logging(config) {
             })
           ],
           expressFormat: true,
-          colorize: true,
+          colorize: config.NODE_ENV === "development" || config.COLORIZE,
           ignoreRoute: filterLogs,
           ignoredRoutes: ["/status"]
         })
       );
     };
 
-    errorLogger = function(app) {
+    errorLogger = function (app) {
       app.use(logger.transports.sentry.raven.errorHandler());
       app.use(
         expressWinston.errorLogger({
@@ -84,12 +77,13 @@ function logging(config) {
               // File will only record errors
               level: "error",
               json: true,
+              colorize: config.NODE_ENV === "development" || config.COLORIZE,
               timestamp: timeZoneStamp
             }),
             new winston.transports.Console({
               level: "error",
               json: false,
-              colorize: true,
+              colorize: config.NODE_ENV === "development" || config.COLORIZE,
               timestamp: timeZoneStamp
             })
           ]
@@ -126,11 +120,7 @@ function logging(config) {
   function init() {
     processConfig();
     if (!config.DISABLE_LOGS) {
-      if (process.env.NODE_ENV === "development") {
-        setDevelopmentLogging();
-      } else {
-        setProductionLogging();
-      }
+      setLogging();
     }
   }
 
