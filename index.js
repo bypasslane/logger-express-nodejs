@@ -100,8 +100,8 @@ function logging(config) {
     return currentTime;
   }
 
-  function filterLogs(req, res) {
-    if (req.headers["user-agent"].includes("ELB-HealthChecker")) return true;
+  function filterLogs(req) {
+    if (req && req.headers["user-agent"].includes("ELB-HealthChecker")) return true;
   }
 
   function processConfig() {
