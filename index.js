@@ -101,7 +101,7 @@ function logging(config) {
   }
 
   function filterLogs(req) {
-    if (req && req.headers["user-agent"].includes("ELB-HealthChecker")) return true;
+    if (req && req.headers["user-agent"] && req.headers["user-agent"].includes("ELB-HealthChecker")) return true;
   }
 
   function processConfig() {
