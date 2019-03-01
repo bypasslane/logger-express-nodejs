@@ -8,21 +8,15 @@ function logging(config) {
   function setLogging() {
     const winston = require("winston");
     const expressWinston = require("express-winston");
-    const Sentry = require("winston-raven-sentry");
-    const sentryOptions = {
-      dsn: config.SENTRY_DSN,
-      environment: config.NODE_ENV,
-      level: "error",
-      tags: {
-        clusterName: config.CLUSTER_NAME
-      }
-    };
 
-    let logger = new winston.Logger();
-    logger.add(Sentry, sentryOptions);
+    const Sentry = require('@sentry/node');
+    Sentry.init({
+      dsn: config.SENTRY_DSN,
+      environment: config.NODE_ENV
+    });
 
     requestLogger = function (app) {
-      app.use(logger.transports.sentry.raven.requestHandler());
+      app.use(Sentry.Handlers.requestHandler());
       app.use(
         expressWinston.logger({
           transports: [
@@ -47,7 +41,7 @@ function logging(config) {
     };
 
     errorLogger = function (app) {
-      app.use(logger.transports.sentry.raven.errorHandler());
+      app.use(Sentry.Handlers.errorHandler());
       app.use(
         expressWinston.errorLogger({
           transports: [

@@ -12,6 +12,7 @@
     "test-ci": "yarn test"
   },
   "dependencies": {
+    "@sentry/node": "^4.6.4",
     "express-winston": "^2.4.0",
     "extend": "^3.0.1",
     "moment-timezone": "^0.5.13",
@@ -24,7 +25,7 @@
     "codecov": "^3.1.0",
     "express": "^4.15.4",
     "mocha": "^5.2.0",
-    "nyc": "^11.1.0",
+    "nyc": "^13.3.0",
     "proxyquire": "^1.8.0",
     "supertest": "^3.0.0",
     "supertest-as-promised": "^4.0.2",
