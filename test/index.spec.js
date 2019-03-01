@@ -9,6 +9,15 @@ const moment = require("moment-timezone");
 let stdout = require("test-console").stdout;
 let stderr = require("test-console").stderr;
 
+const customLoggerFallThroughConfig = {
+  handleFallThroughErrors: function (app) {
+    app.use(function (err, req, res, next) {
+      res.set('Content-Type', 'application/json');
+      res.end(JSON.stringify({ custom: "MY CUSTOM FALL THROUGH" }));
+    });
+  }
+};
+
 describe("logger-express-nodejs", function () {
   let stdoutInspect,
     stderrInspect,
@@ -126,6 +135,7 @@ describe("logger-express-nodejs", function () {
 
     expect(fs.existsSync("./log")).to.be.true;
   });
+
   it("should not throw error if file already exists", function () {
     fs.mkdirSync("./log");
     applyLogger(logger());
@@ -133,6 +143,7 @@ describe("logger-express-nodejs", function () {
     stderrInspect.restore();
     expect(stderrInspect.output.length).to.eq(0);
   });
+
   it("should ignore ELB-HealthChecker requests", function () {
     applyLogger(logger());
 
@@ -249,6 +260,22 @@ describe("logger-express-nodejs", function () {
               expect(log.message).to.match(/middlewareError/);
               done();
             });
+          }, 500);
+        });
+    });
+    it("should allow custom error handling", function (done) {
+      applyLogger(logger(customLoggerFallThroughConfig));
+      request(app)
+        .get("/nextError")
+        .then(function (res) {
+          stdoutInspect.restore();
+          stderrInspect.restore();
+          return res;
+        })
+        .then(function (response) {
+          setTimeout(function () {
+            expect(response.body.custom).to.eq("MY CUSTOM FALL THROUGH");
+            done();
           }, 500);
         });
     });
