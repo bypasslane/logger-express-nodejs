@@ -5,7 +5,10 @@
   "license": "MIT",
   "author": "Jon Ross <jross@bypassmobile.com>",
   "main": "index.js",
-  "repository": "git@github.com:bypasslane/logger-express-nodejs.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bypasslane/logger-express-nodejs.git"
+  },
   "scripts": {
     "report-coverage": "./node_modules/.bin/nyc report --reporter=lcov > coverage.lcov && ./node_modules/.bin/codecov --token=c9ff8517-e6b5-4b48-a260-74ffbe3c55c1",
     "test": "NODE_ENV=test ./node_modules/.bin/nyc ./node_modules/.bin/mocha",
