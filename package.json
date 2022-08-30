@@ -18,7 +18,7 @@
     "@sentry/node": "^4.6.4",
     "express-winston": "^2.4.0",
     "extend": "^3.0.1",
-    "moment-timezone": "^0.5.13",
+    "moment-timezone": "^0.5.35",
     "winston": "^2.3.1",
     "winston-raven-sentry": "^2.0.0"
   },
